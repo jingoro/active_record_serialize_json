@@ -1,0 +1,25 @@
+== Description
+
+== Download
+
+The latest version of the <b>active_record_serialize_json</b> source archive can be
+found at
+
+* http://www.ping.de/~flori
+
+== Installation
+
+You can use rubygems to fetch the gem and install it for you:
+
+  # gem install active_record_serialize_json
+
+You can also put this line into your Rails environment.rb file
+
+  config.gem 'active_record_serialize_json'
+
+and install the gem via
+
+  $ rake gems:install
+
+== Usage
+
