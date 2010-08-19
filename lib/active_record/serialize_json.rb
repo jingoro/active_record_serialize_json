@@ -1,3 +1,4 @@
+require 'active_record/base'
 require 'json'
 
 module ActiveRecord
@@ -49,10 +50,18 @@ module ActiveRecord
       before_save sj
       after_save  sj
 
+      unless respond_to?(:serialize_json_attributes)
+        cattr_accessor :serialize_json_attributes
+        self.serialize_json_attributes = {}
+      end
+      serialize_json_attributes[sj.attribute] = sj
+
       class_eval do
         define_method(:after_find) do
           super if defined? super
-          __send__(:"#{sj.attribute}=", sj.deserialize(self))
+          self.class.serialize_json_attributes.each do |attribute, sj|
+            __send__(:"#{attribute}=", sj.deserialize(self))
+          end
         end
       end
     end

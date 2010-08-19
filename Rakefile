@@ -53,7 +53,8 @@ if defined? Gem
     s.email             = "flori@ping.de"
     s.homepage          = "http://flori.github.com/#{PKG_NAME}"
     s.rubyforge_project = "#{PKG_NAME}"
-    s.add_dependency    'json', '~>1.4'
+    s.add_dependency    'json',         '~>1.4'
+    s.add_dependency    'activerecord', '~>2.3'
   end
 
   Rake::GemPackageTask.new(spec) do |pkg|
