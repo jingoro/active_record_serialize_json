@@ -12,28 +12,6 @@ ActiveRecord::Base.establish_connection(
 )
 
 class SerializeJsonTest < Test::Unit::TestCase
-  class Bar
-    def initialize(bar)
-      @bar = bar
-    end
-
-    attr_reader :bar
-
-    def self.json_create(data)
-      new(data['bar'])
-    end
-
-    def to_json(*a)
-      JSON.generate({
-        'json_class' => self.class.name,
-        'data'       => { 'bar' => bar },
-      }, a.first)
-    end
-    
-    def ==(other)
-      bar == other.bar
-    end
-  end
 
   class Foo < ActiveRecord::Base
     serialize_json :bar 
@@ -78,12 +56,4 @@ class SerializeJsonTest < Test::Unit::TestCase
     assert_equal true, foo_again.baz.first
   end
 
-  def test_object
-    foo = Foo.new(:bar => Bar.new(23), :baz => [ true ])
-    assert foo.save
-    foo_again = Foo.find(foo.id)
-    assert_kind_of Bar, foo.bar
-    assert_equal foo.bar, foo_again.bar
-    assert_equal true, foo_again.baz.first
-  end
 end

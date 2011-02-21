@@ -1,5 +1,5 @@
 require 'active_record'
-require 'json'
+require 'active_support/json'
 
 module ActiveRecord
   class SerializeJSON
@@ -31,12 +31,13 @@ module ActiveRecord
 
     def self.serialize(record, value, opts = {})
       opts ||= {}
-      JSON.generate(value, opts)
+      value.to_json(opts)
     end
 
     def self.deserialize(record, value, opts = {})
       opts ||= {}
-      JSON.parse(value, opts)
+      # ActiveSupport::JSON does not take options
+      ActiveSupport::JSON.decode(value)
     rescue => e
       record.logger && record.logger.warn(e)
       value
