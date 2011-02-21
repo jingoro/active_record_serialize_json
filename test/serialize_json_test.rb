@@ -27,7 +27,7 @@ class SerializeJsonTest < Test::Unit::TestCase
       JSON.generate({
         'json_class' => self.class.name,
         'data'       => { 'bar' => bar },
-      }, *a)
+      }, a.first)
     end
     
     def ==(other)

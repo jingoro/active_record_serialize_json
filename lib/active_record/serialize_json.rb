@@ -60,9 +60,11 @@ module ActiveRecord
         if ActiveRecord::VERSION::MAJOR < 3
           define_method(:after_find) do
             super if defined? super
+            serialize_json_attribute_after_find
           end
+        else
+          after_find :serialize_json_attribute_after_find
         end
-        after_find :serialize_json_attribute_after_find
         define_method(:serialize_json_attribute_after_find) do
           self.class.serialize_json_attributes.each do |attribute, sj|
             __send__(:"#{attribute}=", sj.deserialize(self))
