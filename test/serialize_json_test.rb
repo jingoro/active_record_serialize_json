@@ -1,15 +1,14 @@
-require 'test/unit'
 require 'rubygems'
+require 'bundler'
+Bundler.setup
 
-require 'active_record'
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'active_record/serialize_json'
+require 'test/unit'
 
 ActiveRecord::Base.establish_connection(
-  :adapter  => "mysql",
-  :database => ENV['DATABASE'] || "test",
-  :username => ENV['USER'],
-  :password => ENV['PASSWORD']
+  :adapter  => "sqlite3",
+  :database => ":memory:"
 )
 
 class SerializeJsonTest < Test::Unit::TestCase
@@ -25,10 +24,10 @@ class SerializeJsonTest < Test::Unit::TestCase
     end
 
     def to_json(*a)
-      {
-        :bar           => bar,
-        JSON.create_id => self.class.name,
-      }.to_json(*a)
+      JSON.generate({
+        'json_class' => self.class.name,
+        'data'       => { 'bar' => bar },
+      }, *a)
     end
     
     def ==(other)
@@ -42,6 +41,7 @@ class SerializeJsonTest < Test::Unit::TestCase
   end
 
   def setup
+    ActiveRecord::Schema.verbose = false
     ActiveRecord::Schema.define(:version => 1) do
       create_table(:foos, :force => true) do |t|
         t.string :bar

@@ -1,3 +1,7 @@
+.bundle
 .*.sw[pon]
+.yardoc
 coverage
+doc
+Gemfile.lock
 pkg

@@ -1,3 +1,8 @@
+2011-02-21 - 0.0.2
+  * Support for ActiveRecord 2.x/3.x
+  * Use Bundler and RubyGems for gem management
+  * Use yard for documentation
+  * Added an example to README
 2010-08-19 - 0.0.1
   * Added some necessary dependencies
   * Support for more than one attribute

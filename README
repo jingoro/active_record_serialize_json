@@ -1,11 +1,13 @@
 == Description
 
+Serialize an ActiveRecord::Base attribute via JSON.
+
 == Download
 
 The latest version of the <b>active_record_serialize_json</b> source archive can be
 found at
 
-* http://www.ping.de/~flori
+* https://github.com/flori/active_record_serialize_json
 
 == Installation
 
@@ -13,13 +15,15 @@ You can use rubygems to fetch the gem and install it for you:
 
   # gem install active_record_serialize_json
 
-You can also put this line into your Rails environment.rb file
-
-  config.gem 'active_record_serialize_json'
-
-and install the gem via
-
-  $ rake gems:install
-
 == Usage
 
+  class Person < ActiveRecord::Base
+    serialize_json :config
+  end
+
+  p = Person.new
+  p.config = { 'alerts' => false, 'locale' => 'en' }
+  p.save
+
+  ActiveRecord::Base.connection.select_one "SELECT config FROM people;"
+  #=> {"config"=>"{\"alerts\":false,\"locale\":\"en\"}"}

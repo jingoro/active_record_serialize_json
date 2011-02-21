@@ -1,4 +1,4 @@
-require 'active_record/base'
+require 'active_record'
 require 'json'
 
 module ActiveRecord
@@ -22,23 +22,23 @@ module ActiveRecord
     end
 
     def serialize(record)
-      self.class.serialize(record.__send__(@attribute), @serialize)
+      self.class.serialize(record, record.__send__(@attribute), @serialize)
     end
 
     def deserialize(record)
-      self.class.deserialize(record.__send__(@attribute), @deserialize)
+      self.class.deserialize(record, record.__send__(@attribute), @deserialize)
     end
 
-    def self.serialize(value, opts = {})
+    def self.serialize(record, value, opts = {})
       opts ||= {}
       JSON.generate(value, opts)
     end
 
-    def self.deserialize(value, opts = {})
+    def self.deserialize(record, value, opts = {})
       opts ||= {}
       JSON.parse(value, opts)
     rescue => e
-      Rails.logger.warn e
+      record.logger && record.logger.warn(e)
       value
     end
   end
@@ -57,8 +57,13 @@ module ActiveRecord
       serialize_json_attributes[sj.attribute] = sj
 
       class_eval do
-        define_method(:after_find) do
-          super if defined? super
+        if ActiveRecord::VERSION::MAJOR < 3
+          define_method(:after_find) do
+            super if defined? super
+          end
+        end
+        after_find :serialize_json_attribute_after_find
+        define_method(:serialize_json_attribute_after_find) do
           self.class.serialize_json_attributes.each do |attribute, sj|
             __send__(:"#{attribute}=", sj.deserialize(self))
           end
